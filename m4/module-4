@@ -1,0 +1,116 @@
+mysql> use week2
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+************************************************************************************************************************************************
+
+1.List the city, state, and zip codes in the customer table.  
+Your result should not have duplicates.
+
+mysql> SELECT DISTINCT City, State, Zip
+    -> FROM CUSTOMER;
++------------+-------+-------+
+| City       | State | Zip   |
++------------+-------+-------+
+| Boulder    | CO    | 80309 |
+| Louisville | CO    | 80027 |
++------------+-------+-------+
+2 rows in set (0.00 sec)
+
+************************************************************************************************************************************************
+
+2.List the name, department, phone number, and email address of 
+employees with a phone number beginning with “3-”.
+
+mysql> SELECT empName, department, phone, email
+    -> FROM EMPLOYEE
+    -> WHERE phone LIKE '3-%';
++--------------------+----------------+--------+--------------------+
+| empName            | department     | phone  | email              |
++--------------------+----------------+--------+--------------------+
+| Chuck Coordinator  | Administration | 3-1111 | chuck@colorado.edu |
+| Sally Supervisor   | Planning       | 3-2222 | sally@colorado.edu |
+| Alan Administrator | Administration | 3-3333 | alan@colorado.edu  |
++--------------------+----------------+--------+--------------------+
+3 rows in set (0.00 sec)
+
+************************************************************************************************************************************************
+
+3.List all columns of the resource table with a rate between $10 and $20. 
+Sort the result by rate.
+
+mysql> select * from RESOURCETBL
+    -> where rate between
+    -> 10 and 20
+    -> order by rate;
++-------+--------------+------+
+| RESNO | RESNAME      | RATE |
++-------+--------------+------+
+| R100  | attendant    | 10   |
+| R102  | usher        | 10   |
+| R105  | food service | 10   |
+| R101  | police       | 15   |
+| R104  | janitor      | 15   |
+| R103  | nurse        | 20   |
++-------+--------------+------+
+6 rows in set (0.00 sec)
+
+************************************************************************************************************************************************
+
+4.List the event requests with a status of “Approved” or “Denied” and an authorized date in July 2018. 
+Include the event number, authorization date, and status in the output.
+
+mysql> SELECT eventNo, dateAuth, status FROM EVENTREQUEST where (STATUS = 'Approved' OR STATUS = 'Denied') and (dateAuth between '2018-07-01' and '2018-07-31');
++---------+------------+----------+
+| eventNo | dateAuth   | status   |
++---------+------------+----------+
+| E102    | 2018-07-31 | Approved |
+| E104    | 2018-07-31 | Approved |
+| E106    | 2018-07-31 | Approved |
+| E107    | 2018-07-31 | Denied   |
++---------+------------+----------+
+4 rows in set (0.00 sec)
+
+************************************************************************************************************************************************
+
+5.List the location number and name of locations that are part of the “Basketball arena”.  
+Your WHERE clause should not have a condition involving the facility number compared to a constant (“F101”). 
+Instead, you should use a condition on the FacName column for the value of “Basketball arena”.
+
+mysql> select LocNo, LocName from LOCATION where FacNo in ( select FacNo from FACILITY where FacName = 'Basketball arena' );
++-------+-------------+
+| LocNo | LocName     |
++-------+-------------+
+| L103  | Locker room |
+| L105  | Gate        |
++-------+-------------+
+2 rows in set (0.00 sec)
+
+************************************************************************************************************************************************
+
+6.For each event plan, list the plan number, count of the event plan lines, 
+and sum of the number of resources assigned.  
+For example, plan number “P100” has 4 lines and 7 resources assigned.  
+You only need to consider event plans that have at least one line.
+
+mysql> SELECT planNo, count(lineNo) ,sum(numberFLD) 
+    -> from EVENTPLANLINE
+    -> group by planNo 
+    -> having count(lineNo) >= 1;
++--------+---------------+----------------+
+| planNo | count(lineNo) | sum(numberFLD) |
++--------+---------------+----------------+
+| P100   |             4 |              7 |
+| P101   |             3 |              8 |
+| P102   |             3 |              8 |
+| P103   |             3 |              8 |
+| P104   |             2 |              8 |
+| P105   |             2 |              8 |
+| P199   |             1 |              1 |
+| P349   |             1 |              1 |
+| P85    |             3 |             10 |
+| P95    |             5 |             16 |
++--------+---------------+----------------+
+10 rows in set (0.00 sec)

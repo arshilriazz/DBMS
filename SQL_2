@@ -1,0 +1,96 @@
+1. Find out the number of documentaries with deleted scenes.
+
+mysql> SELECT count(*) AS totaldocumentaries
+    -> FROM film f
+    -> JOIN film_category fc ON f.film_id = fc.film_id
+    -> JOIN category c ON fc.category_id = c.category_id
+    -> WHERE c.name = 'Documentary'
+    -> AND f.special_features = 'Deleted Scenes';
++--------------------+
+| totaldocumentaries |
++--------------------+
+|                  7 |
++--------------------+
+1 row in set (0.01 sec)
+
+*************************************************************************************************************************************************
+2. Find out the number of sci-fi movies rented by the store managed by Jon Stephens.
+
+mysql> SELECT DISTINCT count(*) as total
+    -> FROM category
+    -> JOIN film_category fc ON category.category_id = fc.category_id
+    -> JOIN inventory ON fc.film_id = inventory.film_id
+    -> JOIN rental r ON inventory.inventory_id = r.inventory_id
+    -> JOIN staff s ON r.staff_id = s.staff_id
+    -> WHERE category.name = 'Sci-Fi'
+    -> AND s.first_name = 'JON'
+    -> AND s.last_name = 'STEPHENS';
++----------+
+| total    |
++----------+
+|      548 |
++----------+
+1 row in set (0.01 sec)
+
+*************************************************************************************************************************************************
+3. Find out the total sales from Animation movies.
+
+mysql> SELECT sum(p.amount) as amount
+    -> FROM payment p
+    -> JOIN rental r ON p.rental_id = r.rental_id
+    -> JOIN inventory i ON r.inventory_id = i.inventory_id
+    -> JOIN film_category fc ON i.film_id = fc.film_id
+    -> JOIN category c ON fc.category_id = c.category_id
+    -> WHERE c.name = 'Animation';
++---------+
+| amount  |
++---------+
+| 4656.30 |
++---------+
+1 row in set (0.03 sec)
+
+
+*************************************************************************************************************************************************
+4. Find out the top 3 rented category of movies by “PATRICIA JOHNSON”.
+
+mysql> SELECT c.name as name FROM category c
+    -> JOIN film_category fc ON c.category_id = fc.category_id
+    -> JOIN inventory i ON fc.film_id = i.film_id
+    -> JOIN rental r ON r.inventory_id = i.inventory_id
+    -> JOIN customer cus ON cus.customer_id = r.customer_id
+    -> WHERE cus.first_name = 'PATRICIA'
+    -> AND cus.last_name = 'JOHNSON'
+    -> GROUP BY c.name
+    -> ORDER BY count(c.name) DESC
+    -> LIMIT 3 ;
++-----------+
+| name      |
++-----------+
+| Sports    |
+| Classics  |
+| Animation |
++-----------+
+3 rows in set (0.00 sec)
+
+
+*************************************************************************************************************************************************
+5. Find out the number of R rated movies rented by “SUSAN WILSON”.
+
+mysql> SELECT count(f.film_id) as totalRMovies
+    -> FROM film f
+    -> JOIN inventory i ON f.film_id = i.film_id
+    -> JOIN rental r ON i.inventory_id = r.inventory_id
+    -> JOIN customer c ON r.customer_id = c.customer_id
+    -> WHERE f.rating = 'R'
+    -> AND c.first_name = 'SUSAN'
+    -> AND c.last_name = 'WILSON'
+    -> ;
++-------------+
+| totalRMovies |
++-------------+
+|           3 |
++-------------+
+1 row in set (0.00 sec)
+
+
+
